@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SMARTPARK AI</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --sp-yellow: #F9B91E;
+            --sp-yellow-light: #FFF8E7;
+            --sp-yellow-hover: #FEF0C7;
+            --sp-dark: #101828;
+            --sp-navy: #0F172A;
+            --sp-gray-muted: #64748B;
+            --sp-border: #E2E8F0;
+            --sp-bg-light: #F8FAFC;
+            --sp-green: #10B981;
+            --sp-green-light: #DCFCE7;
+            --sp-green-text: #15803D;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--sp-bg-light);
+            color: var(--sp-dark);
+            min-height: 100vh;
+        }
+
+        /* Top Header Navbar */
+        .admin-header {
+            background-color: #FFFFFF;
+            border-bottom: 1px solid var(--sp-border);
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .brand-logo-box {
+            width: 36px;
+            height: 36px;
+            background-color: var(--sp-dark);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sp-yellow);
+            font-weight: 800;
+            font-size: 1.15rem;
+        }
+
+        .brand-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--sp-dark);
+        }
+
+        .brand-name span {
+            color: var(--sp-yellow);
+        }
+
+        .brand-tagline {
+            font-size: 0.68rem;
+            color: var(--sp-gray-muted);
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 28px;
+            background-color: var(--sp-border);
+            margin: 0 1rem;
+        }
+
+        /* Top Header Search Input */
+        .header-search-box {
+            position: relative;
+            max-width: 280px;
+            width: 100%;
+        }
+
+        .header-search-box input {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            padding-left: 2.2rem;
+            font-size: 0.85rem;
+            height: 36px;
+        }
+
+        .header-search-box i {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 0.88rem;
+        }
+
+        /* Dark Sidebar Styling */
+        .admin-sidebar {
+            width: 250px;
+            background-color: #0F172A;
+            color: #94A3B8;
+            min-height: calc(100vh - 64px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease-in-out;
+        }
+
+        .admin-sidebar.collapsed {
+            margin-left: -250px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0.75rem;
+            margin: 0;
+        }
+
+        .sidebar-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.65rem 1rem;
+            color: #94A3B8;
+            font-weight: 500;
+            font-size: 0.92rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .sidebar-link i {
+            font-size: 1.15rem;
+            margin-right: 0.85rem;
+            color: #64748B;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            color: #FFFFFF;
+            background-color: #1E293B;
+        }
+
+        .sidebar-link.active {
+            color: var(--sp-dark);
+            background-color: var(--sp-yellow);
+            font-weight: 700;
+        }
+
+        .sidebar-link.active i {
+            color: var(--sp-dark);
+        }
+
+        .sidebar-group-header {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #475569;
+            font-weight: 700;
+            padding: 1rem 1rem 0.35rem;
+        }
+
+        /* Sidebar Footer Image Card */
+        .sidebar-bottom-card {
+            margin: 1rem 0.75rem 0.75rem;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 160px;
+            background-color: #1E293B;
+        }
+
+        .sidebar-bottom-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+        }
+
+        .sidebar-bottom-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 1rem;
+            line-height: 1.15;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .sidebar-copyright {
+            padding: 0 1rem 1rem;
+            font-size: 0.7rem;
+            color: #64748B;
+        }
+
+        /* Profile & Dropdowns */
+        .profile-btn {
+            background: transparent;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #F1F5F9;
+            border: 1px solid var(--sp-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sp-dark);
+            font-size: 1.1rem;
+        }
+
+        /* Card Styling */
+        .card-custom {
+            background-color: #FFFFFF;
+            border: 1px solid var(--sp-border);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+        }
+
+        .yellow-icon-badge {
+            width: 44px;
+            height: 44px;
+            background-color: #FEF3C7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sp-dark);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Location Type Soft Pastel Badges matching screenshot */
+        .badge-type-commercial { background-color: #E0F2FE; color: #0369A1; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-type-airport { background-color: #F3E8FF; color: #6B21A8; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-type-office { background-color: #FFEDD5; color: #C2410C; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-type-transit { background-color: #DCFCE7; color: #15803D; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-type-hospital { background-color: #FCE7F3; color: #9D174D; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-type-educational { background-color: #FEF3C7; color: #92400E; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-type-public { background-color: #E0F2FE; color: #1D4ED8; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+
+        /* Badge Status */
+        .badge-status-active { background-color: #DCFCE7; color: #15803D; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+        .badge-status-inactive { background-color: #E2E8F0; color: #475569; font-weight: 600; padding: 0.35em 0.75em; border-radius: 8px; font-size: 0.78rem; }
+
+        /* Small action icon buttons */
+        .btn-action-square {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: none;
+            background-color: #F1F5F9;
+            color: #475569;
+            font-size: 0.88rem;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-square:hover {
+            background-color: #E2E8F0;
+            color: #0F172A;
+        }
+
+        .btn-action-square-delete {
+            background-color: #FEE2E2;
+            color: #EF4444;
+        }
+
+        .btn-action-square-delete:hover {
+            background-color: #FCA5A5;
+            color: #991B1B;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                z-index: 1020;
+                height: calc(100vh - 64px);
+                margin-left: -250px;
+            }
+            .admin-sidebar.show {
+                margin-left: 0;
+            }
+        }
+    </style>
+    </head>
+<body>
+    <!-- 1. TOP HEADER -->
+    <header class="admin-header d-flex align-items-center justify-content-between px-3 px-md-4">
+        <div class="d-flex align-items-center">
+            <!-- Hamburger Menu Button -->
+            <button class="btn btn-link text-dark p-0 me-3 fs-4 text-decoration-none" id="sidebarToggle" aria-label="Toggle Sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <!-- SmartParking Brand Logo -->
+            <a href="http://127.0.0.1:8000/admin/dashboard" class="d-flex align-items-center text-decoration-none">
+                <div class="brand-logo-box me-2">
+                    <span>P</span>
+                </div>
+                <div>
+                    <div class="brand-name"><span>Smart</span>Parking</div>
+                    <div class="brand-tagline">Smart Parking &bull; Live, Easy.</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Header Search Bar -->
+        <div class="d-none d-md-block header-search-box">
+            <i class="bi bi-search"></i>
+            <form action="http://127.0.0.1:8000/admin/locations" method="GET">
+                <input type="text" name="search" class="form-control" placeholder="Search location..." value="">
+            </form>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <!-- Notification Bell -->
+            <div class="dropdown me-2 me-md-3">
+                <a href="#" class="text-dark position-relative p-2 text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-bell fs-5"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-warning text-dark fw-bold" style="font-size: 0.65rem; padding: 0.3em 0.5em;">
+                        56
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-0" style="width: 320px;">
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                        <h6 class="fw-bold mb-0">Notifications</h6>
+                        <a href="http://127.0.0.1:8000/admin/notifications" class="text-decoration-none small text-primary">View All</a>
+                    </div>
+                    <div class="list-group list-group-flush" style="max-height: 280px; overflow-y: auto;">
+                        <a href="http://127.0.0.1:8000/admin/notifications" class="list-group-item list-group-item-action p-3 text-decoration-none">
+                            <div class="fw-semibold small text-dark">High Occupancy Alert</div>
+                            <div class="text-muted small text-truncate">City Center Mall capacity reached 80%.</div>
+                            <small class="text-muted" style="font-size: 0.7rem;">5 mins ago</small>
+                        </a>
+                        <a href="http://127.0.0.1:8000/admin/notifications" class="list-group-item list-group-item-action p-3 text-decoration-none">
+                            <div class="fw-semibold small text-dark">New Location Active</div>
+                            <div class="text-muted small text-truncate">Airport Parking terminal 2 is live.</div>
+                            <small class="text-muted" style="font-size: 0.7rem;">1 hour ago</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vertical Divider -->
+            <div class="header-divider"></div>
+
+            <!-- Profile & Dropdown -->
+            <div class="dropdown">
+                <button class="profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="avatar-circle me-2">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="d-none d-sm-block text-start me-2">
+                        <div class="fw-bold text-dark" style="font-size: 0.88rem; line-height: 1.2;">
+                            Administrator
+                        </div>
+                        <div class="text-muted" style="font-size: 0.72rem;">
+                            Super Admin
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                    <li>
+                        <a class="dropdown-item py-2" href="http://127.0.0.1:8000/admin/profile">
+                            <i class="bi bi-person me-2 text-warning"></i> My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item py-2" href="http://127.0.0.1:8000/admin/settings/view">
+                            <i class="bi bi-gear me-2 text-secondary"></i> Settings
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="POST" action="http://127.0.0.1:8000/admin/logout">
+                            <input type="hidden" name="_token" value="4qql84ITwbvVaLyCqXezsoMXx9pvqWil4atmq2eA" autocomplete="off">                            <button type="submit" class="dropdown-item py-2 text-danger">
+                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container Layout -->
+    <div class="d-flex">
+        <!-- 2. DARK SIDEBAR MATCHING SCREENSHOT -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div>
+                <ul class="sidebar-menu">
+                    <!-- 1. Dashboard -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/dashboard" class="sidebar-link active">
+                            <i class="bi bi-house-door"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- 2. Parking Locations (Active yellow item) -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/locations" class="sidebar-link ">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <span>Parking Locations</span>
+                        </a>
+                    </li>
+
+                    <!-- 3. Parking Slots -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/parking-slots" class="sidebar-link ">
+                            <i class="bi bi-p-circle"></i>
+                            <span>Parking Slots</span>
+                        </a>
+                    </li>
+
+                    <!-- 4. Bookings -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/bookings" class="sidebar-link ">
+                            <i class="bi bi-calendar-event"></i>
+                            <span>Bookings</span>
+                        </a>
+                    </li>
+
+                    <!-- 5. Users -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/users" class="sidebar-link ">
+                            <i class="bi bi-people"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+
+                    <!-- 6. Vehicles -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/vehicles" class="sidebar-link ">
+                            <i class="bi bi-car-front"></i>
+                            <span>Vehicles</span>
+                        </a>
+                    </li>
+
+                    <!-- 7. Payments -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/payments" class="sidebar-link ">
+                            <i class="bi bi-credit-card"></i>
+                            <span>Payments</span>
+                        </a>
+                    </li>
+
+                    <!-- 8. Reports -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/reports" class="sidebar-link ">
+                            <i class="bi bi-bar-chart-line"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+
+                    <!-- 9. Notifications -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/notifications" class="sidebar-link ">
+                            <i class="bi bi-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                    </li>
+
+                    <!-- 10. Settings -->
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/settings/view" class="sidebar-link ">
+                            <i class="bi bi-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+
+                    <!-- 11. Logout -->
+                    <li class="sidebar-item">
+                        <form method="POST" action="http://127.0.0.1:8000/admin/logout">
+                            <input type="hidden" name="_token" value="4qql84ITwbvVaLyCqXezsoMXx9pvqWil4atmq2eA" autocomplete="off">                            <button type="submit" class="sidebar-link border-0 bg-transparent text-start w-100 text-danger">
+                                <i class="bi bi-box-arrow-right text-danger"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </li>
+
+                    <!-- Preserved Additional Functional Modules -->
+                    <li class="sidebar-group-header">Operations</li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/parking-zones" class="sidebar-link ">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                            <span>Zones</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/availability/monitor" class="sidebar-link ">
+                            <i class="bi bi-broadcast"></i>
+                            <span>Live Slot Grid</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/entries" class="sidebar-link ">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Gate Entries</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/exits" class="sidebar-link ">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Gate Exits</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/staff" class="sidebar-link ">
+                            <i class="bi bi-person-badge"></i>
+                            <span>Staff Members</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-group-header">Website CMS</li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/homepage" class="sidebar-link ">
+                            <i class="bi bi-window-desktop"></i>
+                            <span>Homepage CMS</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/services" class="sidebar-link ">
+                            <i class="bi bi-card-checklist"></i>
+                            <span>Services CMS</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="http://127.0.0.1:8000/admin/how-it-works" class="sidebar-link ">
+                            <i class="bi bi-diagram-3"></i>
+                            <span>How It Works CMS</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Bottom Sidebar Parking Image & Copyright -->
+            <div>
+                <div class="sidebar-bottom-card">
+                    <img src="http://127.0.0.1:8000/images/locations/sidebar-parking.jpg" alt="Parking Facility">
+                    <div class="sidebar-bottom-overlay">
+                        PARK<br>SAFE<br>DRIVE<br>HAPPY
+                    </div>
+                </div>
+                <div class="sidebar-copyright">
+                    &copy; 2026 SmartParking<br>All rights reserved.
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content View -->
+        <main class="flex-grow-1 p-3 p-md-4" style="min-width: 0;">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> Welcome back, Administrator!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+
+
+            <div class="container-fluid px-0">
+    <!-- 3. DASHBOARD WELCOME BANNER -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <div style="width: 20px; height: 3px; background-color: var(--sp-yellow); border-radius: 2px;"></div>
+                <span class="text-uppercase fw-bold text-secondary" style="font-size: 0.72rem; letter-spacing: 0.08em;">ADMIN PANEL</span>
+            </div>
+            <h2 class="fw-extrabold text-dark mb-1" style="font-size: 2rem; letter-spacing: -0.02em;">
+                Welcome Back, <span class="text-yellow">Administrator!</span>
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.95rem;">Here’s what’s happening with your parking system today.</p>
+        </div>
+
+        <!-- Date Selector Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-white bg-white border shadow-sm rounded-3 px-3 py-2 d-flex align-items-center gap-2 font-semibold text-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-calendar-event text-secondary"></i>
+                <span style="font-size: 0.9rem;">Fri, 25 Sep 2026</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                <li><a class="dropdown-item py-2 active bg-warning text-dark fw-bold" href="http://127.0.0.1:8000/admin/dashboard?period=7_days">Last 7 Days</a></li>
+                <li><a class="dropdown-item py-2 " href="http://127.0.0.1:8000/admin/dashboard?period=30_days">Last 30 Days</a></li>
+                <li><a class="dropdown-item py-2 " href="http://127.0.0.1:8000/admin/dashboard?period=this_month">This Month</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 4. FOUR STAT CARDS -->
+    <div class="row g-3 mb-4">
+        <!-- Card 1: Total Vehicles -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card-custom p-3 h-100 d-flex flex-row align-items-center">
+                <div class="yellow-icon-badge me-3">
+                    <i class="bi bi-car-front-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary fw-medium small mb-1">Total Vehicles</div>
+                    <h3 class="fw-bold mb-1 text-dark" style="font-size: 1.6rem;">7</h3>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="badge rounded-pill bg-success-subtle text-success fw-bold px-2 py-1" style="font-size: 0.72rem;">
+                            <i class="bi bi-caret-up-fill"></i> +100%
+                        </span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">vs last week</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Total Users -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card-custom p-3 h-100 d-flex flex-row align-items-center">
+                <div class="yellow-icon-badge me-3">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary fw-medium small mb-1">Total Users</div>
+                    <h3 class="fw-bold mb-1 text-dark" style="font-size: 1.6rem;">30</h3>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="badge rounded-pill bg-success-subtle text-success fw-bold px-2 py-1" style="font-size: 0.72rem;">
+                            <i class="bi bi-caret-up-fill"></i> +100%
+                        </span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">vs last week</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Occupied Slots -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card-custom p-3 h-100 d-flex flex-row align-items-center">
+                <div class="yellow-icon-badge me-3">
+                    <i class="bi bi-p-circle-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary fw-medium small mb-1">Occupied Slots</div>
+                    <h3 class="fw-bold mb-1 text-dark" style="font-size: 1.6rem;">1,368</h3>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="badge rounded-pill bg-success-subtle text-success fw-bold px-2 py-1" style="font-size: 0.72rem;">
+                            <i class="bi bi-caret-up-fill"></i> +100%
+                        </span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">vs last week</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Total Revenue -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card-custom p-3 h-100 d-flex flex-row align-items-center">
+                <div class="yellow-icon-badge me-3">
+                    <i class="bi bi-credit-card-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary fw-medium small mb-1">Total Revenue</div>
+                    <h3 class="fw-bold mb-1 text-dark" style="font-size: 1.5rem;">₹ 1,456</h3>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="badge rounded-pill bg-success-subtle text-success fw-bold px-2 py-1" style="font-size: 0.72rem;">
+                            <i class="bi bi-caret-up-fill"></i> +100%
+                        </span>
+                        <span class="text-muted small" style="font-size: 0.75rem;">vs last week</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MIDDLE ROW: PARKING ACTIVITY CHART & SLOT STATUS DONUT -->
+    <div class="row g-4 mb-4">
+        <!-- 5. PARKING ACTIVITY CHART -->
+        <div class="col-12 col-lg-8">
+            <div class="card-custom p-4 h-100">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                    <h5 class="fw-bold text-dark mb-0" style="font-size: 1.15rem;">Parking Activity</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-2 small">
+                            <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: var(--sp-yellow);"></span>
+                            <span class="text-secondary fw-medium">Entries</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 small">
+                            <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: var(--sp-dark);"></span>
+                            <span class="text-secondary fw-medium">Exits</span>
+                        </div>
+
+                        <!-- Period selector dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-white bg-white border shadow-sm rounded-2 dropdown-toggle text-secondary fw-medium px-2 py-1" style="font-size: 0.8rem;" type="button" data-bs-toggle="dropdown">
+                                Last 7 Days
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                <li><a class="dropdown-item py-1 small" href="http://127.0.0.1:8000/admin/dashboard?period=7_days">Last 7 Days</a></li>
+                                <li><a class="dropdown-item py-1 small" href="http://127.0.0.1:8000/admin/dashboard?period=30_days">Last 30 Days</a></li>
+                                <li><a class="dropdown-item py-1 small" href="http://127.0.0.1:8000/admin/dashboard?period=this_month">This Month</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 280px; position: relative;">
+                    <canvas id="parkingActivityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. SLOT STATUS DONUT -->
+        <div class="col-12 col-lg-4">
+            <div class="card-custom p-4 h-100 d-flex flex-column justify-content-between">
+                <h5 class="fw-bold text-dark mb-3" style="font-size: 1.15rem;">Slot Status</h5>
+                
+                <div class="row align-items-center">
+                    <div class="col-7 position-relative d-flex justify-content-center">
+                        <div style="width: 170px; height: 170px;">
+                            <canvas id="slotStatusDonutChart"></canvas>
+                        </div>
+                        <!-- Center Total Badge -->
+                        <div class="position-absolute top-50 start-50 translate-middle text-center" style="pointer-events: none;">
+                            <div class="fw-extrabold text-dark" style="font-size: 1.6rem; line-height: 1;">2,945</div>
+                            <div class="text-muted" style="font-size: 0.72rem; font-weight: 500;">Total Slots</div>
+                        </div>
+                    </div>
+
+                    <div class="col-5 ps-0">
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="rounded-circle" style="width: 10px; height: 10px; background-color: #10B981;"></span>
+                                    <span class="text-secondary fw-medium">Available</span>
+                                </div>
+                                <span class="fw-bold text-dark">1,577</span>
+                            </li>
+                            <li class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="rounded-circle" style="width: 10px; height: 10px; background-color: var(--sp-yellow);"></span>
+                                    <span class="text-secondary fw-medium">Occupied</span>
+                                </div>
+                                <span class="fw-bold text-dark">1,368</span>
+                            </li>
+                            <li class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="rounded-circle" style="width: 10px; height: 10px; background-color: #9CA3AF;"></span>
+                                    <span class="text-secondary fw-medium">Maintenance</span>
+                                </div>
+                                <span class="fw-bold text-dark">0</span>
+                            </li>
+                                                                                </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. RECENT BOOKINGS TABLE -->
+    <div class="card-custom mb-4">
+        <div class="p-4 border-bottom d-flex justify-content-between align-items-center bg-white rounded-top-3">
+            <h5 class="fw-bold text-dark mb-0" style="font-size: 1.15rem;">Recent Bookings</h5>
+            <a href="http://127.0.0.1:8000/admin/bookings" class="text-decoration-none fw-semibold text-secondary small d-flex align-items-center gap-1">
+                View All <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                <thead class="bg-light text-secondary" style="background-color: #F8FAFC !important; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;">
+                    <tr>
+                        <th class="ps-4 py-3 border-0">#</th>
+                        <th class="py-3 border-0">User Name</th>
+                        <th class="py-3 border-0">Vehicle No.</th>
+                        <th class="py-3 border-0">Parking Location</th>
+                        <th class="py-3 border-0">Entry Time</th>
+                        <th class="py-3 border-0">Exit Time</th>
+                        <th class="pe-4 py-3 border-0 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                            <tr>
+                            <td class="ps-4 py-3 fw-semibold text-secondary">1</td>
+                            <td class="py-3 fw-semibold text-dark">Customer Tester</td>
+                            <td class="py-3 text-secondary">-</td>
+                            <td class="py-3 text-secondary">Delete Protected Mall</td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:01 PM
+                            </td>
+                            <td class="py-3 text-secondary">
+                                -
+                            </td>
+                            <td class="pe-4 py-3 text-center">
+                                                                    <span class="badge-status-active">Active</span>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <td class="ps-4 py-3 fw-semibold text-secondary">2</td>
+                            <td class="py-3 fw-semibold text-dark">Driver Tester</td>
+                            <td class="py-3 text-secondary">CA-TEST-99</td>
+                            <td class="py-3 text-secondary">Tech Park 7626</td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:01 PM
+                            </td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:01 PM
+                            </td>
+                            <td class="pe-4 py-3 text-center">
+                                                                    <span class="badge-status-exited">Exited</span>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <td class="ps-4 py-3 fw-semibold text-secondary">3</td>
+                            <td class="py-3 fw-semibold text-dark">Customer Tester</td>
+                            <td class="py-3 text-secondary">-</td>
+                            <td class="py-3 text-secondary">Delete Protected Mall</td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:00 PM
+                            </td>
+                            <td class="py-3 text-secondary">
+                                -
+                            </td>
+                            <td class="pe-4 py-3 text-center">
+                                                                    <span class="badge-status-active">Active</span>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <td class="ps-4 py-3 fw-semibold text-secondary">4</td>
+                            <td class="py-3 fw-semibold text-dark">Driver Tester</td>
+                            <td class="py-3 text-secondary">CA-TEST-99</td>
+                            <td class="py-3 text-secondary">Tech Park 2073</td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:00 PM
+                            </td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:00 PM
+                            </td>
+                            <td class="pe-4 py-3 text-center">
+                                                                    <span class="badge-status-exited">Exited</span>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <td class="ps-4 py-3 fw-semibold text-secondary">5</td>
+                            <td class="py-3 fw-semibold text-dark">Customer Tester</td>
+                            <td class="py-3 text-secondary">-</td>
+                            <td class="py-3 text-secondary">Delete Protected Mall</td>
+                            <td class="py-3 text-secondary">
+                                23 Sep 2026, 06:00 PM
+                            </td>
+                            <td class="py-3 text-secondary">
+                                -
+                            </td>
+                            <td class="pe-4 py-3 text-center">
+                                                                    <span class="badge-status-active">Active</span>
+                                                            </td>
+                        </tr>
+                                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 8. QUICK ACTIONS -->
+    <div class="mb-4">
+        <h5 class="fw-bold text-dark mb-3" style="font-size: 1.1rem;">Quick Actions</h5>
+        <div class="row g-3">
+            <!-- Action 1: Add Location -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <a href="http://127.0.0.1:8000/admin/parking-locations/create" class="text-decoration-none">
+                    <div class="card-custom p-3 d-flex align-items-center justify-content-between hover-shadow">
+                        <div class="d-flex align-items-center">
+                            <div class="yellow-icon-badge me-3" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Add Location</span>
+                        </div>
+                        <i class="bi bi-arrow-right text-secondary fs-5"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Action 2: Manage Slots -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <a href="http://127.0.0.1:8000/admin/parking-slots" class="text-decoration-none">
+                    <div class="card-custom p-3 d-flex align-items-center justify-content-between hover-shadow">
+                        <div class="d-flex align-items-center">
+                            <div class="yellow-icon-badge me-3" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                                <i class="bi bi-p-circle-fill"></i>
+                            </div>
+                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Manage Slots</span>
+                        </div>
+                        <i class="bi bi-arrow-right text-secondary fs-5"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Action 3: Manage Users -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <a href="http://127.0.0.1:8000/admin/users" class="text-decoration-none">
+                    <div class="card-custom p-3 d-flex align-items-center justify-content-between hover-shadow">
+                        <div class="d-flex align-items-center">
+                            <div class="yellow-icon-badge me-3" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">Manage Users</span>
+                        </div>
+                        <i class="bi bi-arrow-right text-secondary fs-5"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Action 4: View Reports -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <a href="http://127.0.0.1:8000/admin/reports" class="text-decoration-none">
+                    <div class="card-custom p-3 d-flex align-items-center justify-content-between hover-shadow">
+                        <div class="d-flex align-items-center">
+                            <div class="yellow-icon-badge me-3" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                            </div>
+                            <span class="fw-bold text-dark" style="font-size: 0.95rem;">View Reports</span>
+                        </div>
+                        <i class="bi bi-arrow-right text-secondary fs-5"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('adminSidebar');
+
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.innerWidth < 992) {
+                        sidebar.classList.toggle('show');
+                    } else {
+                        sidebar.classList.toggle('collapsed');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. PARKING ACTIVITY BAR CHART
+    const activityLabels = ["Sep 19","Sep 20","Sep 21","Sep 22","Sep 23","Sep 24","Sep 25"];
+    const entriesData = [0,0,9,7,12,0,0];
+    const exitsData = [0,0,9,7,12,0,0];
+
+    const ctxActivity = document.getElementById('parkingActivityChart').getContext('2d');
+    new Chart(ctxActivity, {
+        type: 'bar',
+        data: {
+            labels: activityLabels,
+            datasets: [
+                {
+                    label: 'Entries',
+                    data: entriesData,
+                    backgroundColor: '#F9B91E',
+                    borderRadius: 4,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.5
+                },
+                {
+                    label: 'Exits',
+                    data: exitsData,
+                    backgroundColor: '#101828',
+                    borderRadius: 4,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.5
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#64748B', font: { family: 'Inter', size: 11 } }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#F1F5F9' },
+                    ticks: { color: '#64748B', font: { family: 'Inter', size: 11 } }
+                }
+            }
+        }
+    });
+
+    // 2. SLOT STATUS DONUT CHART
+    const slotAvail = 1577;
+    const slotOcc = 1368;
+    const slotMaint = 0;
+    const slotRes = 0;
+    const slotBlock = 0;
+
+    const donutLabels = ['Available', 'Occupied', 'Maintenance'];
+    const donutData = [slotAvail, slotOcc, slotMaint];
+    const donutColors = ['#10B981', '#F9B91E', '#9CA3AF'];
+
+    if (slotRes > 0) {
+        donutLabels.push('Reserved');
+        donutData.push(slotRes);
+        donutColors.push('#3B82F6');
+    }
+    if (slotBlock > 0) {
+        donutLabels.push('Blocked');
+        donutData.push(slotBlock);
+        donutColors.push('#374151');
+    }
+
+    const ctxDonut = document.getElementById('slotStatusDonutChart').getContext('2d');
+    new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+            labels: donutLabels,
+            datasets: [{
+                data: donutData,
+                backgroundColor: donutColors,
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '76%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

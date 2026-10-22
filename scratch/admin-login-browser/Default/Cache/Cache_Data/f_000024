@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SMARTPARK AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-blue: #2563EB;
+            --dark-blue: #172554;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+        }
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: var(--sidebar-bg);
+            color: #e2e8f0;
+        }
+        .sidebar .nav-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            font-weight: 700;
+            padding: 1rem 1rem 0.35rem;
+        }
+        .sidebar .nav-link {
+            color: #94a3b8;
+            font-weight: 500;
+            padding: 0.55rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #ffffff;
+            background-color: var(--sidebar-hover);
+        }
+        .sidebar .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .top-navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .card {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        /* Slot colors for Admin monitor */
+        .slot-pill-available { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .slot-pill-reserved { background-color: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .slot-pill-occupied { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .slot-pill-maintenance { background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        .slot-pill-blocked { background-color: #334155; color: #f8fafc; border: 1px solid #1e293b; }
+    </style>
+    </head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar: Requirement #47 -->
+            <div class="col-md-3 col-lg-2 px-0 sidebar d-none d-md-block">
+                <div class="p-3 border-bottom border-secondary d-flex align-items-center">
+                    <i class="bi bi-p-square-fill fs-3 text-primary me-2"></i>
+                    <span class="fs-5 fw-bold text-white">SMARTPARK AI</span>
+                </div>
+                <div class="p-2">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="http://127.0.0.1:8000/admin/dashboard">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <!-- Parking Management -->
+                        <li class="nav-header">Parking Management</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/parking-locations">
+                                <i class="bi bi-building"></i> Locations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/parking-zones">
+                                <i class="bi bi-grid-3x3-gap"></i> Zones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/parking-slots">
+                                <i class="bi bi-p-square"></i> Parking Slots
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/availability/monitor">
+                                <i class="bi bi-broadcast"></i> Slot Status
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/services">
+                                <i class="bi bi-card-checklist"></i> Parking Services
+                            </a>
+                        </li>
+
+                        <!-- Users & Fleet -->
+                        <li class="nav-header">Users</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/users">
+                                <i class="bi bi-people"></i> Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/vehicles">
+                                <i class="bi bi-car-front"></i> Vehicles
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/staff">
+                                <i class="bi bi-person-badge"></i> Staff
+                            </a>
+                        </li>
+
+                        <!-- Bookings -->
+                        <li class="nav-header">Bookings</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/bookings">
+                                <i class="bi bi-ticket-detailed"></i> All Bookings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/bookings?filter=today">
+                                <i class="bi bi-calendar2-day"></i> Today's Bookings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/bookings?filter=active">
+                                <i class="bi bi-clock-history"></i> Active Bookings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/bookings?filter=history">
+                                <i class="bi bi-archive"></i> Booking History
+                            </a>
+                        </li>
+
+                        <!-- Operations -->
+                        <li class="nav-header">Operations</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/entries">
+                                <i class="bi bi-box-arrow-in-right"></i> Entries
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/exits">
+                                <i class="bi bi-box-arrow-right"></i> Exits
+                            </a>
+                        </li>
+
+                        <!-- Payments -->
+                        <li class="nav-header">Payments</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/payments">
+                                <i class="bi bi-credit-card"></i> Payments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/transactions">
+                                <i class="bi bi-receipt"></i> Transactions
+                            </a>
+                        </li>
+
+                        <!-- Reports -->
+                        <li class="nav-header">Reports</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/reports/bookings">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> Booking Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/reports/revenue">
+                                <i class="bi bi-cash-stack"></i> Revenue Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/reports/occupancy">
+                                <i class="bi bi-pie-chart"></i> Occupancy Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/reports/parking">
+                                <i class="bi bi-file-earmark-bar-graph"></i> Parking Reports
+                            </a>
+                        </li>
+
+                        <!-- Analytics & AI -->
+                        <li class="nav-header">Intelligence</li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/analytics/view">
+                                <i class="bi bi-graph-up"></i> Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/ai-insights/view">
+                                <i class="bi bi-cpu"></i> AI Insights
+                            </a>
+                        </li>
+
+                        <!-- System -->
+                        <li class="nav-header">System</li>
+<li class="nav-item"><a class="nav-link " href="http://127.0.0.1:8000/admin/login-page"><i class="bi bi-box-arrow-in-right"></i> Admin Login CMS</a></li>
+<li class="nav-item"><a class="nav-link " href="http://127.0.0.1:8000/admin/about"><i class="bi bi-info-circle"></i> About Us CMS</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/homepage">
+                                <i class="bi bi-window-desktop"></i> Home Page CMS
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/services">
+                                <i class="bi bi-card-heading"></i> Services Page CMS
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/how-it-works">
+                                <i class="bi bi-diagram-3"></i> How It Works CMS
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/settings/view">
+                                <i class="bi bi-gear"></i> Settings
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="http://127.0.0.1:8000/admin/profile">
+                                <i class="bi bi-person-circle"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <form method="POST" action="http://127.0.0.1:8000/admin/logout">
+                                <input type="hidden" name="_token" value="kOOtsG5VPeSpHTkwmqCu3KMwgdEbXz9KRXACB6tP" autocomplete="off">                                <button type="submit" class="nav-link border-0 bg-transparent text-danger w-100 text-start">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9 col-lg-10 px-0 ms-auto">
+                <nav class="navbar navbar-expand-lg top-navbar px-4 py-3 sticky-top">
+                    <div class="container-fluid px-0">
+                        <span class="navbar-brand fw-semibold text-secondary d-none d-md-inline">
+                            Overview                        </span>
+                        <div class="ms-auto d-flex align-items-center">
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 36px; height: 36px; font-weight: bold;">
+                                        A
+                                    </div>
+                                    <div class="d-none d-sm-block text-start">
+                                        <div class="fw-semibold small">Administrator</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">Super Admin</div>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li>
+                                        <a class="dropdown-item py-2" href="http://127.0.0.1:8000/admin/profile">
+                                            <i class="bi bi-person me-2 text-primary"></i> My Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="http://127.0.0.1:8000/admin/profile#password">
+                                            <i class="bi bi-key me-2 text-warning"></i> Change Password
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="http://127.0.0.1:8000/admin/settings/view">
+                                            <i class="bi bi-gear me-2 text-secondary"></i> System Settings
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="http://127.0.0.1:8000/admin/logout">
+                                            <input type="hidden" name="_token" value="kOOtsG5VPeSpHTkwmqCu3KMwgdEbXz9KRXACB6tP" autocomplete="off">                                            <button type="submit" class="dropdown-item py-2 text-danger">
+                                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <main class="p-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Operational Command Dashboard</h3>
+        <p class="text-muted mb-0">Live real-time monitoring of parking bays, gate entries, departures and revenue</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="http://127.0.0.1:8000/admin/entries" class="btn btn-outline-primary">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Gate Entry
+        </a>
+        <a href="http://127.0.0.1:8000/admin/exits" class="btn btn-outline-success">
+            <i class="bi bi-box-arrow-right me-1"></i> Gate Exit
+        </a>
+        <a href="http://127.0.0.1:8000/admin/parking-locations/create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> New Location
+        </a>
+    </div>
+</div>
+
+<!-- Key Stat Cards Row 1 -->
+<div class="row g-3 mb-3">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-primary-subtle text-primary me-3 fs-3">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Locations</div>
+                    <h3 class="fw-bold mb-0 text-dark">21</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/parking-locations" class="text-decoration-none">Manage facilities &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-indigo-subtle text-indigo me-3 fs-3" style="background-color: #ede9fe; color: #6366f1;">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Zones</div>
+                    <h3 class="fw-bold mb-0 text-dark">31</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/parking-zones" class="text-decoration-none">Manage zones &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-success-subtle text-success me-3 fs-3">
+                    <i class="bi bi-p-square-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Parking Slots</div>
+                    <h3 class="fw-bold mb-0 text-dark">131</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/parking-slots" class="text-decoration-none">View visual grid &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-info-subtle text-info me-3 fs-3">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Users</div>
+                    <h3 class="fw-bold mb-0 text-dark">16</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/users" class="text-decoration-none">Manage accounts &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Stat Cards Row 2 -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-secondary-subtle text-secondary me-3 fs-3">
+                    <i class="bi bi-car-front-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Vehicles</div>
+                    <h3 class="fw-bold mb-0 text-dark">7</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/vehicles" class="text-decoration-none">Registered fleet &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-primary-subtle text-primary me-3 fs-3">
+                    <i class="bi bi-ticket-perforated-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Total Bookings</div>
+                    <h3 class="fw-bold mb-0 text-dark">19</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/bookings" class="text-decoration-none">All records &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-warning-subtle text-warning me-3 fs-3">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Today's Bookings</div>
+                    <h3 class="fw-bold mb-0 text-dark">0</h3>
+                    <small class="text-muted"><a href="http://127.0.0.1:8000/admin/bookings?filter=today" class="text-decoration-none">Filter today &rarr;</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-3 d-flex align-items-center">
+                <div class="p-3 rounded bg-success-subtle text-success me-3 fs-3">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <div>
+                    <div class="text-muted small fw-semibold">Today's Revenue</div>
+                    <h3 class="fw-bold mb-0 text-success">$0.00</h3>
+                    <small class="text-muted">Total: $1,072.00</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Real-time Slot Availability Distribution Bar -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0"><i class="bi bi-pie-chart me-2 text-primary"></i> Live Slot Distribution & Active Parking</h5>
+            <small class="text-muted">Breakdown of all 131 parking bays across all operational zones</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-danger px-3 py-2 fs-6">
+                <i class="bi bi-clock-history me-1"></i> Active Parking: 2
+            </span>
+            <a href="http://127.0.0.1:8000/admin/availability" class="btn btn-sm btn-outline-secondary">Visual Grid</a>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row g-3 text-center mb-3">
+            <div class="col-md-2 col-6">
+                <div class="p-3 rounded border" style="border-left: 4px solid #10b981 !important;">
+                    <span class="badge bg-success mb-1">AVAILABLE</span>
+                    <h3 class="fw-bold mb-0 text-success">129</h3>
+                    <small class="text-muted">Available Slots</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 rounded border" style="border-left: 4px solid #2563eb !important;">
+                    <span class="badge bg-primary mb-1">RESERVED</span>
+                    <h3 class="fw-bold mb-0 text-primary">1</h3>
+                    <small class="text-muted">Reserved Slots</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 rounded border" style="border-left: 4px solid #ef4444 !important;">
+                    <span class="badge bg-danger mb-1">OCCUPIED</span>
+                    <h3 class="fw-bold mb-0 text-danger">1</h3>
+                    <small class="text-muted">Occupied Slots</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 rounded border" style="border-left: 4px solid #6b7280 !important;">
+                    <span class="badge bg-secondary mb-1">MAINTENANCE</span>
+                    <h3 class="fw-bold mb-0 text-secondary">0</h3>
+                    <small class="text-muted">Maintenance</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 rounded border" style="border-left: 4px solid #1f2937 !important;">
+                    <span class="badge bg-dark mb-1">BLOCKED</span>
+                    <h3 class="fw-bold mb-0 text-dark">0</h3>
+                    <small class="text-muted">Blocked Slots</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 rounded border bg-light" style="border-left: 4px solid #dc2626 !important;">
+                    <span class="badge bg-danger mb-1">ACTIVE NOW</span>
+                    <h3 class="fw-bold mb-0 text-danger">2</h3>
+                    <small class="text-muted">Active In Bays</small>
+                </div>
+            </div>
+        </div>
+
+                <div class="progress" style="height: 14px;">
+            <div class="progress-bar bg-success" style="width: 98%" title="Available: 98%"></div>
+            <div class="progress-bar bg-primary" style="width: 1%" title="Reserved: 1%"></div>
+            <div class="progress-bar bg-danger" style="width: 1%" title="Occupied: 1%"></div>
+            <div class="progress-bar bg-secondary" style="width: 0%" title="Maintenance: 0%"></div>
+            <div class="progress-bar bg-dark" style="width: 0%" title="Blocked: 0%"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Bookings Table -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i> Recent Bookings</h5>
+        <a href="http://127.0.0.1:8000/admin/bookings" class="btn btn-sm btn-outline-primary">View All Bookings</a>
+    </div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer</th>
+                    <th>Location / Zone</th>
+                    <th>Slot</th>
+                    <th>Vehicle</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                                    <tr>
+                        <td class="fw-bold font-monospace text-primary">#BK-6AB2BC1D2564E</td>
+                        <td>
+                            <div class="fw-bold">Driver Tester</div>
+                            <small class="text-muted">-</small>
+                        </td>
+                        <td>
+                            <div>Tech Park 4938</div>
+                            <small class="badge bg-light text-dark border">Zone Zone A-4938</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary fs-6">S-4938</span>
+                        </td>
+                        <td class="font-monospace fw-semibold">CA-TEST-99</td>
+                        <td class="fw-bold text-success">$52.00</td>
+                        <td>
+                            <span class="badge 
+                                 bg-success 
+                                ">
+                                COMPLETED
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="http://127.0.0.1:8000/admin/bookings/19" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                                    <tr>
+                        <td class="fw-bold font-monospace text-primary">#BK-6AB2B61064A9C</td>
+                        <td>
+                            <div class="fw-bold">Driver Tester</div>
+                            <small class="text-muted">-</small>
+                        </td>
+                        <td>
+                            <div>Tech Park 3876</div>
+                            <small class="badge bg-light text-dark border">Zone Zone A-3876</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary fs-6">S-3876</span>
+                        </td>
+                        <td class="font-monospace fw-semibold">CA-TEST-99</td>
+                        <td class="fw-bold text-success">$52.00</td>
+                        <td>
+                            <span class="badge 
+                                 bg-success 
+                                ">
+                                COMPLETED
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="http://127.0.0.1:8000/admin/bookings/18" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                                    <tr>
+                        <td class="fw-bold font-monospace text-primary">#BK-6AB2B1A191A57</td>
+                        <td>
+                            <div class="fw-bold">Driver Tester</div>
+                            <small class="text-muted">-</small>
+                        </td>
+                        <td>
+                            <div>Tech Park 4716</div>
+                            <small class="badge bg-light text-dark border">Zone Zone A-4716</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary fs-6">S-4716</span>
+                        </td>
+                        <td class="font-monospace fw-semibold">CA-TEST-99</td>
+                        <td class="fw-bold text-success">$52.00</td>
+                        <td>
+                            <span class="badge 
+                                 bg-success 
+                                ">
+                                COMPLETED
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="http://127.0.0.1:8000/admin/bookings/17" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                                    <tr>
+                        <td class="fw-bold font-monospace text-primary">#BK-6AB2A70AB791E</td>
+                        <td>
+                            <div class="fw-bold">Driver Tester</div>
+                            <small class="text-muted">-</small>
+                        </td>
+                        <td>
+                            <div>Tech Park 9623</div>
+                            <small class="badge bg-light text-dark border">Zone Zone A-9623</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary fs-6">S-9623</span>
+                        </td>
+                        <td class="font-monospace fw-semibold">CA-TEST-99</td>
+                        <td class="fw-bold text-success">$52.00</td>
+                        <td>
+                            <span class="badge 
+                                 bg-success 
+                                ">
+                                COMPLETED
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="http://127.0.0.1:8000/admin/bookings/16" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                                    <tr>
+                        <td class="fw-bold font-monospace text-primary">#BK-6AB2A6DDE7857</td>
+                        <td>
+                            <div class="fw-bold">Driver Tester</div>
+                            <small class="text-muted">-</small>
+                        </td>
+                        <td>
+                            <div>Tech Park 8356</div>
+                            <small class="badge bg-light text-dark border">Zone Zone A-8356</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary fs-6">S-8356</span>
+                        </td>
+                        <td class="font-monospace fw-semibold">CA-TEST-99</td>
+                        <td class="fw-bold text-success">$52.00</td>
+                        <td>
+                            <span class="badge 
+                                 bg-success 
+                                ">
+                                COMPLETED
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="http://127.0.0.1:8000/admin/bookings/15" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                                    <tr>
+                        <td class="fw-bold font-monospace text-primary">#BK-6AB2A6AB2257F</td>
+                        <td>
+                            <div class="fw-bold">Driver Tester</div>
+                            <small class="text-muted">-</small>
+                        </td>
+                        <td>
+                            <div>Tech Park 2710</div>
+                            <small class="badge bg-light text-dark border">Zone Zone A-2710</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary fs-6">S-2710</span>
+                        </td>
+                        <td class="font-monospace fw-semibold">CA-TEST-99</td>
+                        <td class="fw-bold text-success">$52.00</td>
+                        <td>
+                            <span class="badge 
+                                 bg-success 
+                                ">
+                                COMPLETED
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="http://127.0.0.1:8000/admin/bookings/14" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Two Column Row: Recent Entries and Recent Exits -->
+<div class="row g-4">
+    <!-- Recent Entries -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-success"><i class="bi bi-box-arrow-in-right me-2"></i> Recent Entries</h6>
+                <a href="http://127.0.0.1:8000/admin/entries" class="btn btn-sm btn-outline-success">All Entries</a>
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Slot</th>
+                            <th>Customer</th>
+                            <th>Entry Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td><span class="badge bg-secondary">S-4938</span></td>
+                                <td>Driver Tester</td>
+                                <td class="text-muted">Sep 22, 17:34</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td><span class="badge bg-secondary">S-3876</span></td>
+                                <td>Driver Tester</td>
+                                <td class="text-muted">Sep 22, 17:08</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td><span class="badge bg-secondary">S-4716</span></td>
+                                <td>Driver Tester</td>
+                                <td class="text-muted">Sep 22, 16:49</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td><span class="badge bg-secondary">S-9623</span></td>
+                                <td>Driver Tester</td>
+                                <td class="text-muted">Sep 22, 16:04</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td><span class="badge bg-secondary">S-8356</span></td>
+                                <td>Driver Tester</td>
+                                <td class="text-muted">Sep 22, 16:03</td>
+                            </tr>
+                                            </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Exits -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-danger"><i class="bi bi-box-arrow-right me-2"></i> Recent Exits</h6>
+                <a href="http://127.0.0.1:8000/admin/exits" class="btn btn-sm btn-outline-danger">All Exits</a>
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Duration</th>
+                            <th>Total Charge</th>
+                            <th>Exit Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td>1 mins</td>
+                                <td class="fw-bold text-success">$52.00</td>
+                                <td class="text-muted">Sep 22, 17:34</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td>1 mins</td>
+                                <td class="fw-bold text-success">$52.00</td>
+                                <td class="text-muted">Sep 22, 17:08</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td>1 mins</td>
+                                <td class="fw-bold text-success">$52.00</td>
+                                <td class="text-muted">Sep 22, 16:49</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td>1 mins</td>
+                                <td class="fw-bold text-success">$52.00</td>
+                                <td class="text-muted">Sep 22, 16:04</td>
+                            </tr>
+                                                    <tr>
+                                <td class="font-monospace fw-bold">CA-TEST-99</td>
+                                <td>1 mins</td>
+                                <td class="fw-bold text-success">$52.00</td>
+                                <td class="text-muted">Sep 22, 16:03</td>
+                            </tr>
+                                            </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,1 @@
+@include('admin.parking-slots.screen')
